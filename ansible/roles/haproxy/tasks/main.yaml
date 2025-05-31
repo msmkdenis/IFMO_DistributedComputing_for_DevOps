@@ -1,0 +1,21 @@
+- name: Установить HAProxy
+  ansible.builtin.apt:
+    name: haproxy
+    state: present
+    update_cache: true
+
+- name: Скопировать конфигурацию HAProxy
+  ansible.builtin.template:
+    src: haproxy.cfg.j2
+    dest: /etc/haproxy/haproxy.cfg
+    mode: "0644"
+    owner: root
+    group: root
+  notify:
+    - Перезапустить HAProxy
+
+- name: Убедиться, что HAProxy включён и запущен
+  ansible.builtin.service:
+    name: haproxy
+    enabled: true
+    state: started

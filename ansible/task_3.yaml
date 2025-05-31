@@ -57,7 +57,7 @@
       ansible.builtin.set_fact:
         monitoring_net_subnet: "10.100.0.0/24"
         postgres_exporter_ip: "10.100.0.100"
-        postgres_host: "{{ hostvars['node1-postgresql']['internal_host'] }}"
+        postgres_host: "{{ hostvars['node2-postgresql']['internal_host'] }}"
         postgres_port: "5432"
         postgres_db: "postgres"
         postgres_user: "postgres_exporter"

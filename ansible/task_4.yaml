@@ -1,0 +1,71 @@
+# - name: "PostgreSQL installation"
+#   hosts: patroni-node1
+#   become: true
+#   roles:
+#     - postgresql_install
+
+# - name: "PostgreSQL installation"
+#   hosts: patroni-node2
+#   become: true
+#   roles:
+#     - postgresql_install
+
+# - name: Install etcd on etcd1
+#   hosts: etcd1
+#   become: true
+#   pre_tasks:
+#     - name: Set node facts
+#       ansible.builtin.set_fact:
+#         etcd_advertize_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+#   roles:
+#     - etcd
+
+# - name: Install patroni
+#   hosts: patroni-node1
+#   become: true
+#   pre_tasks:
+#     - name: Set node facts
+#       ansible.builtin.set_fact:
+#         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+#         host_ip: "{{ hostvars['patroni-node1']['internal_host'] }}"
+#   roles:
+#     - patroni_primary
+
+# - name: Wait for patroni-node1 to become leader
+#   hosts: patroni-node1
+#   tasks:
+#     - name: Wait until Patroni leader is available
+#       ansible.builtin.uri:
+#         url: "http://127.0.0.1:8008"
+#         return_content: true
+#       register: result
+#       until: result.json.role == "primary"
+#       retries: 30
+#       delay: 3
+
+# - name: Install patroni
+#   hosts: patroni-node2
+#   become: true
+#   pre_tasks:
+#     - name: Set node facts
+#       ansible.builtin.set_fact:
+#         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+#         host_ip: "{{ hostvars['patroni-node2']['internal_host'] }}"
+#   roles:
+#     - patroni_replica
+
+- name: Install HAProxy for Patroni
+  hosts: haproxy1
+  become: true
+  pre_tasks:
+    - name: Set Patroni cluster nodes as facts
+      ansible.builtin.set_fact:
+        patroni_nodes:
+          - name: patroni-node1
+            ip: "{{ hostvars['patroni-node1']['internal_host'] }}"
+          - name: patroni-node2
+            ip: "{{ hostvars['patroni-node2']['internal_host'] }}"
+        haproxy_port: 5432
+        restapi_port: 8008
+  roles:
+    - haproxy

@@ -1,0 +1,9 @@
+name: etcd1
+data-dir: /var/lib/etcd
+listen-peer-urls: http://0.0.0.0:2380
+listen-client-urls: http://0.0.0.0:2379
+advertise-client-urls: http://{{ etcd_advertize_ip }}:2379
+initial-advertise-peer-urls: http://{{ etcd_advertize_ip }}:2380
+initial-cluster: etcd1=http://{{ etcd_advertize_ip }}:2380
+initial-cluster-state: new
+initial-cluster-token: etcd-cluster-1

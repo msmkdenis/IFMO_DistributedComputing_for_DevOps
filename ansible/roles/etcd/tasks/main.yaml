@@ -1,0 +1,66 @@
+---
+- name: Install required packages
+  ansible.builtin.apt:
+    name:
+      - wget
+      - tar
+    state: present
+
+- name: Download etcd release archive
+  ansible.builtin.get_url:
+    url: "https://github.com/etcd-io/etcd/releases/download/v3.5.14/etcd-v3.5.14-linux-amd64.tar.gz"
+    dest: /tmp/etcd.tar.gz
+    mode: '0644'
+
+- name: Extract etcd archive
+  ansible.builtin.unarchive:
+    src: /tmp/etcd.tar.gz
+    dest: /usr/local/bin/
+    remote_src: true
+    creates: /usr/local/bin/etcd-v3.5.14-linux-amd64
+
+- name: Move etcd binaries to /usr/local/bin
+  ansible.builtin.copy:
+    remote_src: true
+    src: "/usr/local/bin/etcd-v3.5.14-linux-amd64/{{ item }}"
+    dest: "/usr/local/bin/{{ item }}"
+    mode: '0755'
+  loop:
+    - etcd
+    - etcdctl
+
+- name: Create etcd user and group
+  ansible.builtin.user:
+    name: etcd
+    system: true
+    shell: /usr/sbin/nologin
+    create_home: false
+
+- name: Create etcd data directory
+  ansible.builtin.file:
+    path: /var/lib/etcd
+    state: directory
+    owner: etcd
+    group: etcd
+    mode: '0750'
+
+- name: Deploy etcd systemd unit
+  ansible.builtin.copy:
+    src: etcd.service
+    dest: /etc/systemd/system/etcd.service
+    mode: '0644'
+
+- name: Deploy etcd config file
+  ansible.builtin.template:
+    src: etcd.yml.j2
+    dest: /etc/etcd.yml
+    mode: '0644'
+    owner: etcd
+    group: etcd
+
+- name: Enable and start etcd service
+  ansible.builtin.systemd:
+    name: etcd
+    enabled: true
+    state: started
+    daemon_reload: true

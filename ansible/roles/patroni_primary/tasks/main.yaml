@@ -1,0 +1,79 @@
+- name: Disable PostgreSQL service (Patroni will control it)
+  ansible.builtin.service:
+    name: postgresql
+    enabled: false
+    state: stopped
+
+- name: Remove PostgreSQL data directory
+  become: true
+  ansible.builtin.file:
+    path: "/var/lib/postgresql/17/main"
+    state: absent
+
+- name: Install build dependencies for Patroni
+  ansible.builtin.apt:
+    name:
+      - build-essential
+      - libpq-dev
+      - python3-dev
+    state: present
+
+- name: Install pip3 and Patroni
+  ansible.builtin.apt:
+    name: python3-pip
+    state: present
+
+- name: Install Patroni and dependencies
+  ansible.builtin.pip:
+    name:
+      - patroni[etcd]
+      - psycopg2-binary
+
+- name: Create data and config directories for Patroni
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0700"
+  loop:
+    - /var/lib/postgresql/17/main
+    - /etc/patroni
+
+- name: Deploy patroni.yml config
+  ansible.builtin.template:
+    src: templates/patroni.yml.j2
+    dest: /etc/patroni/patroni.yml
+    owner: postgres
+    group: postgres
+    mode: "0644"
+
+- name: Create systemd unit for Patroni
+  ansible.builtin.copy:
+    dest: /etc/systemd/system/patroni.service
+    content: |
+      [Unit]
+      Description=Patroni PostgreSQL HA
+      After=network.target
+
+      [Service]
+      Type=simple
+      User=postgres
+      ExecStart=/usr/local/bin/patroni /etc/patroni/patroni.yml
+      Restart=on-failure
+      LimitNOFILE=1024
+
+      [Install]
+      WantedBy=multi-user.target
+    mode: "0644"
+
+- name: Reload systemd
+  ansible.builtin.systemd:
+    daemon_reload: true
+
+- name: Enable and start Patroni
+  ansible.builtin.service:
+    name: patroni
+    enabled: true
+    state: started
+

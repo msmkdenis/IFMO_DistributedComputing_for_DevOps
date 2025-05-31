@@ -1,0 +1,23 @@
+global
+    log /dev/log local0
+    maxconn 2048
+    daemon
+
+defaults
+    log     global
+    mode    tcp
+    option  tcplog
+    timeout connect 5s
+    timeout client  30s
+    timeout server  30s
+
+frontend pgsql_front
+    bind *:{{ haproxy_port }}
+    default_backend pgsql_back
+
+backend pgsql_back
+    option httpchk GET /role
+    http-check expect rstring "\"role\":\s*\"primary\""
+{% for node in patroni_nodes %}
+    server {{ node.name }} {{ node.ip }}:{{ haproxy_port }} check port {{ restapi_port }}
+{% endfor %}

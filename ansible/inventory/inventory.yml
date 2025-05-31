@@ -1,31 +1,31 @@
 ---
 all:
   hosts:
-    directus:
+    haproxy1:
       ansible_host: 127.0.0.1
-      ansible_port: 2201
+      ansible_port: 2207
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
-      internal_host: 192.168.56.10
+      internal_host: 192.168.56.60
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
-    node1-postgresql:
+    etcd1:
       ansible_host: 127.0.0.1
-      ansible_port: 2202
+      ansible_port: 2206
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
-      internal_host: 192.168.56.20
+      internal_host: 192.168.56.50
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
-    node2-postgresql:
+    patroni-node1:
       ansible_host: 127.0.0.1
-      ansible_port: 2203
+      ansible_port: 2210
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
-      internal_host: 192.168.56.30
+      internal_host: 192.168.56.80
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
-    node3-monitoring:
+    patroni-node2:
       ansible_host: 127.0.0.1
-      ansible_port: 2205
+      ansible_port: 2211
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
-      internal_host: 192.168.56.40
+      internal_host: 192.168.56.81
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
