@@ -1,30 +1,58 @@
 ---
 all:
   hosts:
-    haproxy1:
+    directus:
       ansible_host: 127.0.0.1
-      ansible_port: 2207
+      ansible_port: 2201
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
-      internal_host: 192.168.56.60
+      internal_host: 192.168.56.10
+      ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+    node1-postgresql:
+      ansible_host: 127.0.0.1
+      ansible_port: 2202
+      ansible_user: devopsuser
+      ansible_ssh_private_key_file: devopsuser_rsa
+      internal_host: 192.168.56.20
+      ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+    node2-postgresql:
+      ansible_host: 127.0.0.1
+      ansible_port: 2203
+      ansible_user: devopsuser
+      ansible_ssh_private_key_file: devopsuser_rsa
+      internal_host: 192.168.56.30
+      ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+    node3-monitoring:
+      ansible_host: 127.0.0.1
+      ansible_port: 2205
+      ansible_user: devopsuser
+      ansible_ssh_private_key_file: devopsuser_rsa
+      internal_host: 192.168.56.40
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
     etcd1:
       ansible_host: 127.0.0.1
-      ansible_port: 2206
+      ansible_port: 1106
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
       internal_host: 192.168.56.50
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
+    haproxy1:
+      ansible_host: 127.0.0.1
+      ansible_port: 1107
+      ansible_user: devopsuser
+      ansible_ssh_private_key_file: devopsuser_rsa
+      internal_host: 192.168.56.60
+      ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
     patroni-node1:
       ansible_host: 127.0.0.1
-      ansible_port: 2210
+      ansible_port: 1108
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
       internal_host: 192.168.56.80
       ansible_ssh_extra_args: "-o StrictHostKeyChecking=no"
     patroni-node2:
       ansible_host: 127.0.0.1
-      ansible_port: 2211
+      ansible_port: 1109
       ansible_user: devopsuser
       ansible_ssh_private_key_file: devopsuser_rsa
       internal_host: 192.168.56.81

@@ -1,0 +1,60 @@
+[directus] Actual enp0s8 IP: 192.168.56.10
+[node1-postgresql] Actual enp0s8 IP: 192.168.56.20
+[node2-postgresql] Actual enp0s8 IP: 192.168.56.30
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40
+[etcd1] Actual enp0s8 IP: 192.168.56.55
+[haproxy1] Actual enp0s8 IP: 192.168.56.60
+[patroni-node1] Actual enp0s8 IP: 192.168.56.80
+[patroni-node2] Actual enp0s8 IP: 192.168.56.81
+[directus] Actual enp0s8 IP: 
+[node1-postgresql] Actual enp0s8 IP: 
+[node2-postgresql] Actual enp0s8 IP: 
+[node3-monitoring] Actual enp0s8 IP: 
+[etcd1] Actual enp0s8 IP: 192.168.56.55
+[haproxy1] Actual enp0s8 IP: 
+[patroni-node1] Actual enp0s8 IP: 
+[patroni-node2] Actual enp0s8 IP: 
+[directus] Actual enp0s8 IP: 
+[node1-postgresql] Actual enp0s8 IP: 
+[node2-postgresql] Actual enp0s8 IP: 
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40
+[directus] Actual enp0s8 IP: 192.168.56.10
+[node1-postgresql] Actual enp0s8 IP: 192.168.56.20
+[node2-postgresql] Actual enp0s8 IP: 192.168.56.30
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40
+[etcd1] Actual enp0s8 IP: 192.168.56.55
+[haproxy1] Actual enp0s8 IP: 192.168.56.60
+[patroni-node1] Actual enp0s8 IP: 192.168.56.80
+[patroni-node2] Actual enp0s8 IP: 192.168.56.81
+[directus] Actual enp0s8 IP: 
+[node1-postgresql] Actual enp0s8 IP: 
+[node2-postgresql] Actual enp0s8 IP: 
+[node3-monitoring] Actual enp0s8 IP: 
+[etcd1] Actual enp0s8 IP: 
+[haproxy1] Actual enp0s8 IP: 
+[patroni-node1] Actual enp0s8 IP: 
+[patroni-node2] Actual enp0s8 IP: 
+[directus] Actual enp0s8 IP: 
+[directus] Actual enp0s8 IP: 
+[node1-postgresql] Actual enp0s8 IP: 
+[node2-postgresql] Actual enp0s8 IP: 
+[directus] Actual enp0s8 IP: 192.168.56.10
+[node1-postgresql] Actual enp0s8 IP: 192.168.56.20
+[node2-postgresql] Actual enp0s8 IP: 192.168.56.30
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40
+[etcd1] Actual enp0s8 IP: 192.168.56.55
+[haproxy1] Actual enp0s8 IP: 192.168.56.60
+[patroni-node1] Actual enp0s8 IP: 192.168.56.80
+[patroni-node2] Actual enp0s8 IP: 192.168.56.81
+[directus] Actual enp0s8 IP: 192.168.56.10
+[node1-postgresql] Actual enp0s8 IP: 192.168.56.20
+[node2-postgresql] Actual enp0s8 IP: 192.168.56.30
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40
+[etcd1] Actual enp0s8 IP: 192.168.56.55
+[haproxy1] Actual enp0s8 IP: 192.168.56.60
+[patroni-node1] Actual enp0s8 IP: 192.168.56.80
+[patroni-node2] Actual enp0s8 IP: 192.168.56.81
+[directus] Actual enp0s8 IP: 192.168.56.10
+[node1-postgresql] Actual enp0s8 IP: 
+[node2-postgresql] Actual enp0s8 IP: 
+[node3-monitoring] Actual enp0s8 IP: 192.168.56.40

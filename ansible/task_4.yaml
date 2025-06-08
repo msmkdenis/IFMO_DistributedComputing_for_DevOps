@@ -1,35 +1,35 @@
-# - name: "PostgreSQL installation"
-#   hosts: patroni-node1
-#   become: true
-#   roles:
-#     - postgresql_install
+- name: "PostgreSQL installation"
+  hosts: patroni-node1
+  become: true
+  roles:
+    - postgresql_install
 
-# - name: "PostgreSQL installation"
-#   hosts: patroni-node2
-#   become: true
-#   roles:
-#     - postgresql_install
+- name: "PostgreSQL installation"
+  hosts: patroni-node2
+  become: true
+  roles:
+    - postgresql_install
 
-# - name: Install etcd on etcd1
-#   hosts: etcd1
-#   become: true
-#   pre_tasks:
-#     - name: Set node facts
-#       ansible.builtin.set_fact:
-#         etcd_advertize_ip: "{{ hostvars['etcd1']['internal_host'] }}"
-#   roles:
-#     - etcd
+- name: Install etcd on etcd1
+  hosts: etcd1
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        etcd_advertize_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+  roles:
+    - etcd
 
-# - name: Install patroni
-#   hosts: patroni-node1
-#   become: true
-#   pre_tasks:
-#     - name: Set node facts
-#       ansible.builtin.set_fact:
-#         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
-#         host_ip: "{{ hostvars['patroni-node1']['internal_host'] }}"
-#   roles:
-#     - patroni_primary
+- name: Install patroni
+  hosts: patroni-node1
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+        host_ip: "{{ hostvars['patroni-node1']['internal_host'] }}"
+  roles:
+    - patroni_primary
 
 # - name: Wait for patroni-node1 to become leader
 #   hosts: patroni-node1
@@ -40,19 +40,19 @@
 #         return_content: true
 #       register: result
 #       until: result.json.role == "primary"
-#       retries: 30
+#       retries: 12
 #       delay: 3
 
-# - name: Install patroni
-#   hosts: patroni-node2
-#   become: true
-#   pre_tasks:
-#     - name: Set node facts
-#       ansible.builtin.set_fact:
-#         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
-#         host_ip: "{{ hostvars['patroni-node2']['internal_host'] }}"
-#   roles:
-#     - patroni_replica
+- name: Install patroni
+  hosts: patroni-node2
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
+        host_ip: "{{ hostvars['patroni-node2']['internal_host'] }}"
+  roles:
+    - patroni_replica
 
 - name: Install HAProxy for Patroni
   hosts: haproxy1

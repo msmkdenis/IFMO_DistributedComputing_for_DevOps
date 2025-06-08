@@ -16,17 +16,13 @@
       - build-essential
       - libpq-dev
       - python3-dev
-    state: present
-
-- name: Install pip3 and Patroni
-  ansible.builtin.apt:
-    name: python3-pip
+      - python3-pip
     state: present
 
 - name: Install Patroni and dependencies
   ansible.builtin.pip:
     name:
-      - patroni[etcd]
+      - patroni[etcd3]
       - psycopg2-binary
 
 - name: Create data and config directories for Patroni
@@ -39,6 +35,58 @@
   loop:
     - /var/lib/postgresql/17/main
     - /etc/patroni
+
+- name: Run pg_basebackup from specified source node (primary source)
+  become: true
+  become_user: postgres
+  ansible.builtin.command:
+    cmd: >
+      pg_basebackup -h 192.168.56.20 -U replication
+      -D /var/lib/postgresql/17/main -Fp -Xs
+
+- name: Ensure correct ownership of the data directory
+  become: true
+  ansible.builtin.file:
+    path: /var/lib/postgresql/17/main
+    owner: postgres
+    group: postgres
+    recurse: true
+
+- name: Slurp postgresql.conf from source host (192.168.56.20)
+  ansible.builtin.slurp:
+    src: /etc/postgresql/17/main/postgresql.conf
+  delegate_to: node1-postgresql
+  register: postgresql_conf
+
+- name: Copy postgresql.conf to target
+  ansible.builtin.copy:
+    content: "{{ postgresql_conf.content | b64decode }}"
+    dest: /var/lib/postgresql/17/main/postgresql.conf
+    owner: postgres
+    group: postgres
+    mode: "0600"
+
+- name: Slurp pg_hba.conf from source host (192.168.56.20)
+  ansible.builtin.slurp:
+    src: /etc/postgresql/17/main/pg_hba.conf
+  delegate_to: node1-postgresql
+  register: pg_hba_conf
+
+- name: Copy pg_hba.conf to target
+  ansible.builtin.copy:
+    content: "{{ pg_hba_conf.content | b64decode }}"
+    dest: /var/lib/postgresql/17/main/pg_hba.conf
+    owner: postgres
+    group: postgres
+    mode: "0600"
+
+- name: Ensure conf.d directory exists for PostgreSQL
+  ansible.builtin.file:
+    path: /var/lib/postgresql/17/main/conf.d
+    state: directory
+    owner: postgres
+    group: postgres
+    mode: "0750"
 
 - name: Deploy patroni.yml config
   ansible.builtin.template:
@@ -76,4 +124,3 @@
     name: patroni
     enabled: true
     state: started
-

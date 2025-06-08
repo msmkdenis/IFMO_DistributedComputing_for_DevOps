@@ -26,7 +26,7 @@
 - name: Install Patroni and dependencies
   ansible.builtin.pip:
     name:
-      - patroni[etcd]
+      - patroni[etcd3]
       - psycopg2-binary
 
 - name: Create data and config directories for Patroni

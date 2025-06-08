@@ -1,111 +1,111 @@
 VMS = [
-    # {
-    #     name: "directus",
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.10",
-    #     private_ip: "192.168.56.10",
-    #     ssh_port: 2201,
-    #     memory: 1024,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 8055, host: 8055},
-    #         {guest: 22, host: 2201}
-    #     ]
-    # },
-    # {
-    #     name: "node1-postgresql",
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.20",
-    #     private_ip: "192.168.56.20",
-    #     ssh_port: 2202,
-    #     memory: 1024,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 22, host: 2202}
-    #     ]
-    # },
-    # {
-    #     name: "node2-postgresql",
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.30",
-    #     private_ip: "192.168.56.30",
-    #     ssh_port: 2203,
-    #     memory: 1024,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 22, host: 2203}
-    #     ]
-    # },
-    # {
-    #     name: "node3-monitoring",
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.40",
-    #     private_ip: "192.168.56.40",
-    #     ssh_port: 2205,
-    #     memory: 2048,
-    #     cpus: 2,
-    #     forwarded_ports: [
-    #         {guest: 22, host: 2205},
-    #         {guest: 3000, host: 3000},  # Grafana
-    #         {guest: 9090, host: 9090}   # Prometheus
-    #     ]
-    # },
-    # {
-    #     name: "etcd1",  # Etcd кластер (1-нода, для теста)
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.50",
-    #     private_ip: "192.168.56.50",
-    #     ssh_port: 2206,
-    #     memory: 512,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 2379, host: 2379}, # Etcd client port
-    #         {guest: 2380, host: 2380}, # Etcd peer port
-    #         {guest: 22, host: 2206}
-    #     ]
-    # },
+    {
+        name: "directus",
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.10",
+        private_ip: "192.168.56.10",
+        ssh_port: 2201,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 8055, host: 8055},
+            {guest: 22, host: 2201}
+        ]
+    },
+    {
+        name: "node1-postgresql",
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.20",
+        private_ip: "192.168.56.20",
+        ssh_port: 2202,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 22, host: 2202}
+        ]
+    },
+    {
+        name: "node2-postgresql",
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.30",
+        private_ip: "192.168.56.30",
+        ssh_port: 2203,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 22, host: 2203}
+        ]
+    },
+    {
+        name: "node3-monitoring",
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.40",
+        private_ip: "192.168.56.40",
+        ssh_port: 2205,
+        memory: 2048,
+        cpus: 2,
+        forwarded_ports: [
+            {guest: 22, host: 2205},
+            {guest: 3000, host: 3000},  # Grafana
+            {guest: 9090, host: 9090}   # Prometheus
+        ]
+    },
+    {
+        name: "etcd1",  # Etcd кластер (1-нода, для теста)
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.50",
+        private_ip: "192.168.56.50",
+        ssh_port: 1106,
+        memory: 512,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 2379, host: 2379}, # Etcd client port
+            {guest: 2380, host: 2380}, # Etcd peer port
+            {guest: 22, host: 1106}
+        ]
+    },
     {
         name: "haproxy1",  # HAProxy (балансировщик для Patroni)
         box: "ubuntu/jammy64",
         public_ip: "192.168.56.60",
         private_ip: "192.168.56.60",
-        ssh_port: 2207,
+        ssh_port: 1107,
         memory: 512,
         cpus: 1,
         forwarded_ports: [
-            {guest: 5432, host: 5432}, # Прокси для PostgreSQL
+            {guest: 5432, host: 7654}, # Прокси для PostgreSQL
             {guest: 8008, host: 8008}, # Patroni API через HAProxy
-            {guest: 22, host: 2207}
+            {guest: 22, host: 1107}
+        ]
+    },
+    {
+        name: "patroni-node1",  # Новая ВМ: Patroni + PostgreSQL (будущий лидер)
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.80",
+        private_ip: "192.168.56.80",
+        ssh_port: 1108,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 22, host: 1108},
+            {guest: 5432, host: 5433},  # PostgreSQL
+            {guest: 8008, host: 8020}   # Patroni API
+        ]
+    },
+    {
+        name: "patroni-node2",  # Новая ВМ: Patroni + PostgreSQL (будущая реплика)
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.81",
+        private_ip: "192.168.56.81",
+        ssh_port: 1109,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 22, host: 1109},
+            {guest: 5432, host: 5434},  # PostgreSQL
+            {guest: 8008, host: 8009}   # Patroni API
         ]
     }
-    # {
-    #     name: "patroni-node1",  # Новая ВМ: Patroni + PostgreSQL (будущий лидер)
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.80",
-    #     private_ip: "192.168.56.80",
-    #     ssh_port: 2210,
-    #     memory: 1024,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 22, host: 2210},
-    #         {guest: 5432, host: 5433},  # PostgreSQL
-    #         {guest: 8008, host: 8008}   # Patroni API
-    #     ]
-    # },
-    # {
-    #     name: "patroni-node2",  # Новая ВМ: Patroni + PostgreSQL (будущая реплика)
-    #     box: "ubuntu/jammy64",
-    #     public_ip: "192.168.56.81",
-    #     private_ip: "192.168.56.81",
-    #     ssh_port: 2211,
-    #     memory: 1024,
-    #     cpus: 1,
-    #     forwarded_ports: [
-    #         {guest: 22, host: 2211},
-    #         {guest: 5432, host: 5434},  # PostgreSQL
-    #         {guest: 8008, host: 8009}   # Patroni API
-    #     ]
-    # }
 ]
 
 Vagrant.configure("2") do |config|
@@ -122,7 +122,7 @@ Vagrant.configure("2") do |config|
                 v.vm.network "forwarded_port",
                     guest: fp[:guest],
                     host: fp[:host],
-                    auto_correct: true
+                    auto_correct: false
             end
 
             # Настройки VirtualBox
