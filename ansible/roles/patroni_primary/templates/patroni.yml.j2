@@ -39,12 +39,6 @@ postgresql:
   connect_address: {{ host_ip }}:5432
   data_dir: /var/lib/postgresql/17/main
   bin_dir: /usr/lib/postgresql/17/bin
-  pg_hba:
-    - local all all peer
-    - host all all 127.0.0.1/32 trust
-    - local replication all peer
-    - host replication replication 192.168.56.81/32 trust
-    - host all all 0.0.0.0/0 md5
   authentication:
     replication:
       username: replication
@@ -55,6 +49,11 @@ postgresql:
   parameters:
     unix_socket_directories: '/var/run/postgresql'
     wal_keep_size: 512
+  pg_hba:
+  {% for hba_unit in hba_units %}
+- {{ hba_unit }}
+  {% endfor %}
+
 
 tags:
   nofailover: false

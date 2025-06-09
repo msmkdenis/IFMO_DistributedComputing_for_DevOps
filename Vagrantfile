@@ -103,7 +103,21 @@ VMS = [
         forwarded_ports: [
             {guest: 22, host: 1109},
             {guest: 5432, host: 5434},  # PostgreSQL
-            {guest: 8008, host: 8009}   # Patroni API
+            {guest: 8008, host: 8021}   # Patroni API
+        ]
+    },
+    {
+        name: "patroni-node3",  # Новая ВМ: Patroni + PostgreSQL (будущая реплика)
+        box: "ubuntu/jammy64",
+        public_ip: "192.168.56.82",
+        private_ip: "192.168.56.82",
+        ssh_port: 1110,
+        memory: 1024,
+        cpus: 1,
+        forwarded_ports: [
+            {guest: 22, host: 1110},
+            {guest: 5432, host: 5435},  # PostgreSQL
+            {guest: 8008, host: 8022}   # Patroni API
         ]
     }
 ]
