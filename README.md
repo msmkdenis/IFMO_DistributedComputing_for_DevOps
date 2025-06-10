@@ -193,6 +193,8 @@ ansible-playbook -i ./ansible/inventory/inventory.yml ./ansible/task_3.yaml
 ansible-playbook -i ./ansible/inventory/inventory.yml ./ansible/task_4.yaml
 ```
 
+Directus будет доступен по адресу http://127.0.0.1:8055/admin/login
+
 Ключевые изменения: 
 
 Реализован patroni-кластер: etcd (1ВМ) - haproxy (1ВМ) - patroni-node (3ВМ)
