@@ -74,6 +74,9 @@
         prometheus_targets:
           - { ip: "{{ hostvars['node1-postgresql']['internal_host'] }}", port: "9187" }
           - { ip: "{{ hostvars['node2-postgresql']['internal_host'] }}", port: "9187" }
+          - { ip: "{{ hostvars['patroni-node1']['internal_host'] }}", port: "9187" }
+          - { ip: "{{ hostvars['patroni-node2']['internal_host'] }}", port: "9187" }
+          - { ip: "{{ hostvars['patroni-node3']['internal_host'] }}", port: "9187" }
   roles:
     - setup_prometheus
 

@@ -41,7 +41,7 @@
   become_user: postgres
   ansible.builtin.command:
     cmd: >
-      pg_basebackup -h 192.168.56.20 -U replication
+      pg_basebackup -h {{ directus_primary_node }} -U replication
       -D /var/lib/postgresql/17/main -Fp -Xs
 
 - name: Ensure correct ownership of the data directory

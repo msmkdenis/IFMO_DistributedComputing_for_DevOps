@@ -37,6 +37,14 @@
   roles:
     - etcd
 
+- name: "Stop directus container"
+  hosts: directus
+  tasks:
+    - name: "Create Directus container"
+      community.docker.docker_container:
+        name: directus
+        state: stopped
+
 - name: Install patroni
   hosts: patroni-node1
   become: true
@@ -45,6 +53,7 @@
       ansible.builtin.set_fact:
         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
         host_ip: "{{ hostvars['patroni-node1']['internal_host'] }}"
+        directus_primary_node: "{{ hostvars['node1-postgresql']['internal_host'] }}"
         hba_units:
           - local all all peer
           - host all all 127.0.0.1/32 trust
@@ -77,6 +86,9 @@
         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
         host_ip: "{{ hostvars['patroni-node2']['internal_host'] }}"
         hba_units:
+          - local all all peer
+          - host all all 127.0.0.1/32 trust
+          - local replication all peer
           - host replication replication 192.168.56.80/32 trust
           - host replication replication 192.168.56.82/32 trust
           - host replication replication 192.168.56.81/32 trust
@@ -94,6 +106,9 @@
         etcd_ip: "{{ hostvars['etcd1']['internal_host'] }}"
         host_ip: "{{ hostvars['patroni-node3']['internal_host'] }}"
         hba_units:
+          - local all all peer
+          - host all all 127.0.0.1/32 trust
+          - local replication all peer
           - host replication replication 192.168.56.80/32 trust
           - host replication replication 192.168.56.82/32 trust
           - host replication replication 192.168.56.81/32 trust
@@ -119,3 +134,86 @@
         restapi_port: 8008
   roles:
     - haproxy
+
+- name: "Docker installation"
+  hosts: [patroni-node1, patroni-node2, patroni-node3]
+  become: true
+  serial: 1  # Запускать задачи по очереди на каждом хосте
+  roles:
+    - docker_install
+
+- name: "Create patroni-node1 postgres_exporter container"
+  hosts: patroni-node1
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        monitoring_net_subnet: "10.100.0.0/24"
+        postgres_exporter_ip: "10.100.0.100"
+        postgres_host: "{{ hostvars['patroni-node1']['internal_host'] }}"
+        postgres_port: "5432"
+        postgres_db: "postgres"
+        postgres_user: "postgres_exporter"
+        postgres_password: "postgres_exporter"
+  roles:
+    - create_postgres_exporter_container
+
+- name: "Create patroni-node2 postgres_exporter container"
+  hosts: patroni-node2
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        monitoring_net_subnet: "10.100.0.0/24"
+        postgres_exporter_ip: "10.100.0.100"
+        postgres_host: "{{ hostvars['patroni-node2']['internal_host'] }}"
+        postgres_port: "5432"
+        postgres_db: "postgres"
+        postgres_user: "postgres_exporter"
+        postgres_password: "postgres_exporter"
+  roles:
+    - create_postgres_exporter_container
+
+- name: "Create patroni-node1 postgres_exporter container"
+  hosts: patroni-node3
+  become: true
+  pre_tasks:
+    - name: Set node facts
+      ansible.builtin.set_fact:
+        monitoring_net_subnet: "10.100.0.0/24"
+        postgres_exporter_ip: "10.100.0.100"
+        postgres_host: "{{ hostvars['patroni-node3']['internal_host'] }}"
+        postgres_port: "5432"
+        postgres_db: "postgres"
+        postgres_user: "postgres_exporter"
+        postgres_password: "postgres_exporter"
+  roles:
+    - create_postgres_exporter_container
+
+- name: "Create Directus container to haproxy"
+  hosts: directus
+  tasks:
+    - name: Create Directus container
+      community.docker.docker_container:
+        name: directus
+        image: directus/directus:latest
+        state: started
+        restart_policy: always
+        ports:
+          - "8055:8055"
+        volumes:
+          - /opt/directus/uploads:/directus/uploads
+          - /opt/directus/extensions:/directus/extensions
+        env:
+          SECRET: "replace-with-secure-random-value"
+          DB_CLIENT: "pg"
+          DB_HOST: "{{ hostvars['haproxy1']['internal_host'] }}"
+          DB_PORT: "5432"
+          DB_DATABASE: "directus"
+          DB_USER: "directus"
+          DB_PASSWORD: "directus"
+          CACHE_ENABLED: "false"
+          ADMIN_EMAIL: "admin@example.com"
+          ADMIN_PASSWORD: "d1r3ctu5"
+        exposed_ports:
+          - "8055"
