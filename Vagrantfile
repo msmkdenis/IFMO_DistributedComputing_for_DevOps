@@ -29,11 +29,11 @@ VMS = [
         box: "ubuntu/jammy64",
         public_ip: "192.168.56.30",
         private_ip: "192.168.56.30",
-        ssh_port: 2203,
+        ssh_port: 2204,
         memory: 1024,
         cpus: 1,
         forwarded_ports: [
-            {guest: 22, host: 2203}
+            {guest: 22, host: 2204}
         ]
     },
     {
@@ -45,7 +45,7 @@ VMS = [
         memory: 2048,
         cpus: 2,
         forwarded_ports: [
-            {guest: 22, host: 2205},
+            {guest: 22, host: 1105},
             {guest: 3000, host: 3000},  # Grafana
             {guest: 9090, host: 9090}   # Prometheus
         ]
