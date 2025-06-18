@@ -4,8 +4,8 @@
   pre_tasks:
     - name: Set node facts
       ansible.builtin.set_fact:
-        append_pg_hba_allow_network: "192.168.56.80/32"
-        append_pg_hba_entry: "host replication all 192.168.56.80/32 trust"
+        append_pg_hba_allow_network: "{{ hostvars['patroni-node1']['internal_host'] }}"
+        append_pg_hba_entry: "host replication all {{ hostvars['patroni-node1']['internal_host'] }}/32 trust"
   roles:
     - append_pg_hba
 
@@ -58,8 +58,8 @@
           - local all all peer
           - host all all 127.0.0.1/32 trust
           - local replication all peer
-          - host replication replication 192.168.56.81/32 trust
-          - host replication replication 192.168.56.82/32 trust
+          - host replication replication {{ hostvars['patroni-node2']['internal_host'] }}/32 trust
+          - host replication replication {{ hostvars['patroni-node3']['internal_host'] }}/32 trust
           - host all all 0.0.0.0/0 md5
           - host all postgres_exporter 10.100.0.0/24 md5
   roles:
@@ -89,9 +89,8 @@
           - local all all peer
           - host all all 127.0.0.1/32 trust
           - local replication all peer
-          - host replication replication 192.168.56.80/32 trust
-          - host replication replication 192.168.56.82/32 trust
-          - host replication replication 192.168.56.81/32 trust
+          - host replication replication {{ hostvars['patroni-node1']['internal_host'] }}/32 trust
+          - host replication replication {{ hostvars['patroni-node3']['internal_host'] }}/32 trust
           - host all all 0.0.0.0/0 md5
           - host all postgres_exporter 10.100.0.0/24 md5
   roles:
@@ -109,9 +108,8 @@
           - local all all peer
           - host all all 127.0.0.1/32 trust
           - local replication all peer
-          - host replication replication 192.168.56.80/32 trust
-          - host replication replication 192.168.56.82/32 trust
-          - host replication replication 192.168.56.81/32 trust
+          - host replication replication {{ hostvars['patroni-node1']['internal_host'] }}/32 trust
+          - host replication replication {{ hostvars['patroni-node2']['internal_host'] }}/32 trust
           - host all all 0.0.0.0/0 md5
           - host all postgres_exporter 10.100.0.0/24 md5
   roles:

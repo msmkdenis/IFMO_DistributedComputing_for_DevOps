@@ -61,7 +61,7 @@
     group: postgres
     recurse: true
 
-- name: Slurp postgresql.conf from source host (192.168.56.20)
+- name: Slurp postgresql.conf from source host
   ansible.builtin.slurp:
     src: /etc/postgresql/17/main/postgresql.conf
   delegate_to: node1-postgresql
@@ -75,7 +75,7 @@
     group: postgres
     mode: "0600"
 
-- name: Slurp pg_hba.conf from source host (192.168.56.20)
+- name: Slurp pg_hba.conf from source host
   ansible.builtin.slurp:
     src: /etc/postgresql/17/main/pg_hba.conf
   delegate_to: node1-postgresql
